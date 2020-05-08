@@ -26,10 +26,7 @@ const EnvironmentalDataSchema = new Schema({
     vel_viento_10m: {type: Array},    
     bc: {type: Array},
     temperatura_4m: {type: Array},
-    uv_bc: {type: Array},
-    vel_viento: {type: Array},
-    vel_viento: {type: Array},
-    vel_viento: {type: Array}   
+    uv_bc: {type: Array}
 })
 
 export default model('EnvironmentalDataSchema', EnvironmentalDataSchema, 'environmentalData')

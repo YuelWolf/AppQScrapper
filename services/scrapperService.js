@@ -1,22 +1,24 @@
 const cheerio = require('cheerio')
 const request = require('request-promise')
-var date = new Date()
-var hour = date.getHours()
+var date = new Date().toISOString()
 
-async function init(){
+const scrapper = async function init(){
    const $ = await request({
        uri: 'http://201.245.192.252:81/Report/HourlyReports',
        transform: body => cheerio.load(body)
     })
-   const stationName = await $('.TableStation').each((i,el)=>{
+   await $('.TableStation').each((i,el)=>{
+      let newEntry = {}
+      newEntry.station_name = $(el).find('h2').html().trim()
+      newEntry.date= date
       console.log($(el).find('h2').html().trim())
       $(el).find('td').each((i, el) =>{
-         if($(el).text()!="")
-         console.log($(el).text().trim());         
-      })      
-    })
-    console.log(hour);
-    
+         //if($(el).text()!="")
+         //console.log($(el).text().trim());         
+      })
+      console.log(newEntry);
+            
+    })    
 }
 
-init()
+module.exports = scrapper;

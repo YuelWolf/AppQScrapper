@@ -1,5 +1,4 @@
-import mongoose, {ConnectionOptions} from 'mongoose';
-import config from './config/config'
+const mongoose = require('mongoose');
 
 const dbOptions = {
     useNewUrlParser: true,
@@ -8,11 +7,11 @@ const dbOptions = {
 
 async function connect(){
     try {
-        await mongoose.connect(config.DB.URI, dbOptions);
+        await mongoose.connect(process.env.MONGO_URL, dbOptions);
         console.log('>>> Database connected');        
     } catch (error) {
         console.log('Error');        
     }
 }
 
-export default connect;
+module.exports = mongoose
