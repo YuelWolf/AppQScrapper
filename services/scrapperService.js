@@ -1,6 +1,7 @@
 const cheerio = require('cheerio')
 const request = require('request-promise')
 const moment = require('moment')
+const environmentalCtrl = require('../controllers/environmentalDataController')
 var hour = (new Date()).getHours() - 5
 var date = moment(new Date()).format('YYYY-MM-DD')
 
@@ -450,8 +451,8 @@ const scrapper = async function init(){
             }      
          }          
       })
-      console.log(newEntry);            
-    })    
+      environmentalCtrl.create(newEntry)              
+      })           
 }
 
 module.exports = scrapper;

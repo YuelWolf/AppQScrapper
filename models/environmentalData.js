@@ -1,8 +1,9 @@
-import {Schema, model} from 'mongoose';
+const mongoose = require('mongoose')
+const {Schema} = mongoose
 
 const EnvironmentalDataSchema = new Schema({
     station_name: {type: String, required: true},
-    date : {type: date, required: true},
+    date : {type: Date, required: true},
     pm10: {type: Array},
     pm25: {type: Array},
     co: {type: Array},
@@ -29,4 +30,4 @@ const EnvironmentalDataSchema = new Schema({
     uv_bc: {type: Array}
 })
 
-export default model('EnvironmentalDataSchema', EnvironmentalDataSchema, 'environmentalData')
+module.exports = mongoose.model('EnvironmentalDataSchema', EnvironmentalDataSchema, 'environmentalData')

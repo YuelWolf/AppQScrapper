@@ -5,13 +5,10 @@ const dbOptions = {
     useUnifiedTopology: true
 };
 
-async function connect(){
-    try {
-        await mongoose.connect(process.env.MONGO_URL, dbOptions);
-        console.log('>>> Database connected');        
-    } catch (error) {
-        console.log('Error');        
-    }
-}
+const URI = process.env.MONGO_URL;
+
+mongoose.connect(URI, dbOptions)
+  .then(db => console.log('DB is conected'))
+  .catch(err => console.log(err))
 
 module.exports = mongoose
