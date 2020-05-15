@@ -451,6 +451,7 @@ const scrapper = async function init(){
             }      
          }          
       })
+      console.log(`Datos de las ${hour}`);      
       environmentalCtrl.create(newEntry)              
       })           
 }
