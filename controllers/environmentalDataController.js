@@ -1,7 +1,8 @@
 const EnvironmentalData = require('../models/environmentalData');
 
 const environmentalCtrl = {}
-   
+
+//Create an environmental pollution entry
 environmentalCtrl.create = async (req) => {    
     const duplicate = await EnvironmentalData.findOne({station_name: req.station_name, date: req.date})
     if(duplicate) {
@@ -44,6 +45,7 @@ environmentalCtrl.create = async (req) => {
     }
 }
 
+//Update an enviromental pollution entry
 environmentalCtrl.update = async (req) => {
     const currentEntry = await EnvironmentalData.findOne({station_name: req.station_name, date: req.date})
     let newEntry  = {}
@@ -80,6 +82,37 @@ environmentalCtrl.update = async (req) => {
       console.log({
         'status': 'Entrada actualizado'
       })
+    
+}
+
+//Get environmental pollution data
+environmentalCtrl.getCurrentData = async (req, res) => {
+    let currentDate = new Date()
+    const Data = await EnvironmentalData.find({date: currentDate}, 'station_name pm10 pm25');
+    if (Data){
+        const sortData = []
+        Data.forEach(element => {
+            let currentData = {
+                station_name : element.station_name,
+                pm10 : element.pm10.pop(),
+                pm25 : element.pm25.pop()
+            }
+
+            let maxPollution = (currentData.pm10.value >= (currentData.pm25.value*2)) ? currentData.pm10.value : currentData.pm25.value*2
+            if (maxPollution <= 50 )
+                currentData.pollution_level = 'Normal';
+            else if (maxPollution>= 50 && maxPollution < 75)
+                sortData.pollution_level = 'Medium';
+            else if (maxPollution>= 75 && maxPollution < 100)
+                currentData.pollution_level = 'Dangerous';
+            else
+                currentData.pollution_level = 'Risky';
+            
+            sortData.push(currentData);
+        })    
+        res.json({status: 200, body:sortData});
+    } else 
+        res.json({status: 404, body: {msg:'Environmental data not found'}})
     
 }
 
