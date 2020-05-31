@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 const EnvironmentalData = require('../models/environmentalData');
 
 const environmentalCtrl = {}
@@ -47,7 +49,7 @@ environmentalCtrl.create = async (req) => {
 
 //Update an enviromental pollution entry
 environmentalCtrl.update = async (req) => {
-    const currentEntry = await EnvironmentalData.findOne({station_name: req.station_name, date: req.date})
+    const currentEntry = await EnvironmentalData.find({station_name: req.station_name, date: req.date})
     let newEntry  = {}
     newEntry.station_name = currentEntry.station_name
     newEntry.date = currentEntry.date
@@ -87,8 +89,8 @@ environmentalCtrl.update = async (req) => {
 
 //Get environmental pollution data
 environmentalCtrl.getCurrentData = async (req, res) => {
-    let currentDate = new Date()
-    const Data = await EnvironmentalData.find({date: currentDate}, 'station_name pm10 pm25');
+    const currentDate = moment(new Date()).format('YYYY-MM-DD')
+    const Data = await EnvironmentalData.find({date: currentDate}, 'station_name pm10 pm25');    
     if (Data){
         const sortData = []
         Data.forEach(element => {
@@ -97,12 +99,24 @@ environmentalCtrl.getCurrentData = async (req, res) => {
                 pm10 : element.pm10.pop(),
                 pm25 : element.pm25.pop()
             }
-
-            let maxPollution = (currentData.pm10.value >= (currentData.pm25.value*2)) ? currentData.pm10.value : currentData.pm25.value*2
+            
+            let maxPollution = (parseFloat(currentData.pm10.value) >= (parseFloat(currentData.pm25.value)*2)) ? parseFloat(currentData.pm10.value) : parseFloat(currentData.pm25.value)*2;           
+            console.log(typeof maxPollution);
+            
+            console.log(currentData.station_name );
+            console.log("pm10: " + currentData.pm10.value);
+            console.log("pm25: " + parseFloat(currentData.pm25.value)*2);
+            console.log("maxPollution: "+maxPollution);
+            console.log("_______________________________");
+            
+            
+            
+            
+            
             if (maxPollution <= 50 )
                 currentData.pollution_level = 'Normal';
             else if (maxPollution>= 50 && maxPollution < 75)
-                sortData.pollution_level = 'Medium';
+                currentData.pollution_level = 'Medium';
             else if (maxPollution>= 75 && maxPollution < 100)
                 currentData.pollution_level = 'Dangerous';
             else
