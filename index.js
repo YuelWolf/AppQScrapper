@@ -26,7 +26,7 @@ app.use('/api/environmental', require('./routes/environmental.routes'))
 //Starting the server
 var server = app.listen(app.get('port'), () =>{
   console.log('Server on port', app.get('port'));
-  //scrapper();
+  scrapper();
   setInterval(async function() {
   await scrapper();
   },3600000)
