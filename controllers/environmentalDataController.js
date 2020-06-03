@@ -100,14 +100,14 @@ environmentalCtrl.getCurrentData = async (req, res) => {
                 pm25 : element.pm25.pop()
             }
             
-            let maxPollution = (parseFloat(currentData.pm10..pop().value) >= (parseFloat(currentData.pm25.pop().value)*2)) ? parseFloat(currentData.pm10.pop().value) : parseFloat(currentData.pm25.pop().value)*2;           
-            console.log(typeof maxPollution);
+            let maxPollution = (parseFloat(currentData.pm10.value) >= (parseFloat(currentData.pm25.value)*2)) ? parseFloat(currentData.pm10.value) : parseFloat(currentData.pm25.value)*2;           
             
+            /*
             console.log(currentData.station_name );
             console.log("pm10: " + currentData.pm10.value);
             console.log("pm25: " + parseFloat(currentData.pm25.value)*2);
             console.log("maxPollution: "+maxPollution);
-            console.log("_______________________________");            
+            console.log("_______________________________");     */       
             
             
             if (maxPollution <= 50 )
@@ -123,11 +123,16 @@ environmentalCtrl.getCurrentData = async (req, res) => {
         })
         //Sort array to get min and max Pollution station
         const sortData = await todayData.sort( (a,b) =>{
-            return ((parseFloat(a['pm10'].pop().value)+parseFloat(a['pm25'].pop().value)) > (parseFloat(b['pm10'].pop().value)+parseFloat(b['pm25'].pop().value)))? 1 : ((parseFloat(a['pm10'].pop().value)+parseFloat(a['pm25'].pop().value)) < (parseFloat(b['pm10'].pop().value)+parseFloat(b['pm25'].pop().value)) ? -1:0)
+            return ((parseFloat(a['pm10'].value)+parseFloat(a['pm25'].value)) > (parseFloat(b['pm10'].value)+parseFloat(b['pm25'].value)))? 1 : ((parseFloat(a['pm10'].value)+parseFloat(a['pm25'].value)) < (parseFloat(b['pm10'].value)+parseFloat(b['pm25'].value)) ? -1:0)
         })
 
-        todayData.minPollution = sortData.pop().station_name;
-        todayData.maxPollution = sortData[0].station_name;
+        let aditionalInfo = {
+            minPollution : sortData[0].station_name,
+            maxPollution : sortData[sortData.length - 1].station_name
+        }
+
+        todayData.push(aditionalInfo);
+        
         res.json({status: 200, body:todayData});
     } else 
         res.json({status: 404, body: {msg:'Environmental data not found'}})
