@@ -5,7 +5,8 @@ const dbOptions = {
     useUnifiedTopology: true
 };
 
-const URI = process.env.MONGO_URL;
+
+const URI = "mongodb+srv://user:passwordappq@cluster0-4xkde.mongodb.net/test?retryWrites=true&w=majority";
 
 mongoose.connect(URI, dbOptions)
   .then(db => console.log('DB is conected'))
